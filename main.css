@@ -39,10 +39,6 @@ body {
     margin-bottom: 1rem;
 }
 
-.col-min-width { 
-    min-width:100px; 
-}
-
 .button-action {
     padding: .7rem;
     font-size: 1.8rem;
@@ -91,4 +87,20 @@ body {
 @keyframes spinner {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+.alpine-table th {
+    min-width: 100px;
+}
+.alpine-table th:not(.alpine-no-sort) {
+    cursor: pointer;
+}
+
+.alpine-sort-asc::after {
+    content: ' \1f81d';
+}
+
+.alpine-sort-desc::after {
+    content: ' \1f81f';
 }

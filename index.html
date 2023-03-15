@@ -2,7 +2,6 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>AlpineJS Table</title>
         <link rel="stylesheet" href="https://unpkg.com/chota@latest">
@@ -10,79 +9,84 @@
     </head>
 
     <body>
-        <div x-data="tableData" x-cloak>
-            <div class="container" :id="key">
-                <div class="row">
-                    <div class="col col-10-md">
-                        <input type="text" name="tableSearchQuery" placeholder="Search" class="col-6 col-4-md" :value="searchQuery" @input="onSearchQueryInput">
-                    </div>
-                    <div class="col col-2-md is-right is-vertical-align">
-                        <div x-show="filteredRowTotal">
-                            <span x-text="startRowNumber"></span><span> to </span><span x-text="endRowNumber"></span><span> of </span><span x-text="filteredRowTotal"></span>
-                        </div>
-                    </div>
+        <div class="container alpine-table" x-data="table('comments', 'https://jsonplaceholder.typicode.com/comments')" x-cloak>
+            <div class="row">
+                <div class="col col-10-md">
+                    <input type="text" name="tableSearchQuery" placeholder="Search" class="col-6 col-4-md" :value="searchQuery" @input="onSearchQueryInput">
                 </div>
-
-                <div class="row">
-                    <div class="col">
-                        <table class="striped">
-                            <thead>
-                                <tr>
-                                    <th class="col-min-width" @click="onSortClick('id')">Id</th>
-                                    <th class="col-min-width" @click="onSortClick('postId')">PostId</th>
-                                    <th class="col-min-width" @click="onSortClick('name')">Name</th>
-                                    <th class="col-min-width" @click="onSortClick('email')">Email</th>
-                                    <th class="col-min-width" @click="onSortClick('body')">Body</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-if="!rows.length">
-                                    <tr>
-                                        <td colspan="5"><h1 class="text-center"><div class="spinner"></div></h1></td>
-                                    </tr>
-                                </template>
-                                <template x-for="row in filteredRows" :key="row._index">
-                                    <tr>
-                                        <td x-text="row.id"></td>
-                                        <td x-text="row.postId"></td>
-                                        <td x-text="row.name"></td>
-                                        <td x-text="row.email"></td>
-                                        <td x-text="row.body"></td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col col-10-md">
-                        <button class="button button-action primary flip-horizontal" title="First" @click="onFirstPageClick" x-bind:disabled="currentPage === 0">
-                            <span class="arrow">&#187;</span>
-                        </button>
-                        <button class="button button-action primary flip-horizontal" title="Previous" @click="onPreviousPageClick" x-bind:disabled="currentPage === 0">
-                            <span class="arrow">&#8250;</span>
-                        </button>
-                        <button class="button button-action primary" title="Next" @click="onNextPageClick" x-bind:disabled="currentPage === maxPage">
-                            <span class="arrow">&#8250;</span>
-                        </button>
-                        <button class="button button-action primary" title="Last" @click="onLastPageClick" x-bind:disabled="currentPage === maxPage">
-                            <span class="arrow">&#187;</span>
-                        </button>
-                    </div>
-                    <div class="col col-2-md">
-                        <select name="tablePerPage" @input="onPerPageInput">
-                            <option disabled>Per Page</option>
-                            <option value="10" x-bind:selected="perPage === 10">10</option>
-                            <option value="20" x-bind:selected="perPage === 20">20</option>
-                            <option value="50" x-bind:selected="perPage === 50">50</option>
-                            <option value="100" x-bind:selected="perPage === 100">100</option>
-                        </select>
+                <div class="col col-2-md is-right is-vertical-align">
+                    <div>
+                        <span x-text="startRowNumber"></span><span> to </span><span x-text="endRowNumber"></span><span> of </span><span x-text="filteredRowTotal"></span>
                     </div>
                 </div>
             </div>
-        </div>
 
+            <div class="row">
+                <table class="col striped">
+                    <thead>
+                        <tr>
+                            <th class="alpine-no-sort">
+                                <a href="Add" class="button secondary button-action icon" title="Add">
+                                    <span class="rotate45">&#10006;</span>
+                                </a>
+                            </th>
+                            <th :class="sortClass('id')" @click="onSortClick('id')">Id</th>
+                            <th :class="sortClass('postId')" @click="onSortClick('postId')">PostId</th>
+                            <th :class="sortClass('name')" @click="onSortClick('name')">Name</th>
+                            <th :class="sortClass('email')" @click="onSortClick('email')">Email</th>
+                            <th :class="sortClass('body')" @click="onSortClick('body')">Body</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-if="!rows">
+                            <tr>
+                                <td colspan="6"><h1 class="text-center"><div class="spinner"></div></h1></td>
+                            </tr>
+                        </template>
+                        <template x-for="row in filteredRows" :key="row._index">
+                            <tr>
+                                <td>
+                                    <a :href="`Edit/${row.id}`" class="button primary button-action icon" title="Edit">&#9998;</a>
+                                    <a :href="`Delete/${row.id}`" class="button dark button-action icon" title="Delete">&#10006;</a>
+                                </td>
+                                <td x-text="row.id"></td>
+                                <td x-text="row.postId"></td>
+                                <td x-text="row.name"></td>
+                                <td x-text="row.email"></td>
+                                <td x-text="row.body"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+                <div class="col col-10-md">
+                    <button class="button button-action primary flip-horizontal" title="First" :disabled="isFirstPage" @click="onFirstPageClick">
+                        <span class="arrow">&#187;</span>
+                    </button>
+                    <button class="button button-action primary flip-horizontal" title="Previous" :disabled="isFirstPage" @click="onPreviousPageClick">
+                        <span class="arrow">&#8250;</span>
+                    </button>
+                    <button class="button button-action primary" title="Next" :disabled="isLastPage" @click="onNextPageClick">
+                        <span class="arrow">&#8250;</span>
+                    </button>
+                    <button class="button button-action primary" title="Last" :disabled="isLastPage" @click="onLastPageClick">
+                        <span class="arrow">&#187;</span>
+                    </button>
+                </div>
+                <div class="col col-2-md">
+                    <select name="tablePerPage" @input="onPerPageInput">
+                        <option disabled>Per Page</option>
+                        <option value="10" :selected="is10PerPage">10</option>
+                        <option value="20" :selected="is20PerPage">20</option>
+                        <option value="50" :selected="is50PerPage">50</option>
+                        <option value="100" :selected="is100PerPage">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
         <script type="module" src="/main.js"></script>
     </body>
 </html>
